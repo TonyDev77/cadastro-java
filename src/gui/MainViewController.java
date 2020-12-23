@@ -32,7 +32,8 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemDeparmentAction() {
-		System.out.println("onMenuItemDeparmentAction");
+		// Carrega a view Department
+		loadView("/gui/DepartmentList.fxml");
 	}
 	
 	@FXML
@@ -46,7 +47,10 @@ public class MainViewController implements Initializable {
 		
 	}
 	
-	// Abre uma nova view dentro MainView
+	/*
+	 * Abre uma nova view dentro MainView
+	 * 'synchronized' permite que processamento das trades não seja interrompida 
+	 */
 	public synchronized void loadView(String absoluteName) {
 		try {
 			// armazena a url a view passada no parâmetro

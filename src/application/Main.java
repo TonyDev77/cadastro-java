@@ -32,7 +32,7 @@ public class Main extends Application {
 		}
 	}
 	
-	// get para mainScene
+	// torna mainScene acessível
 	public static Scene getMainScene() {
 		return mainScene;
 	}

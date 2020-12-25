@@ -45,7 +45,8 @@ public class DepartmentListController implements Initializable {
 	public void onBtNewAction(ActionEvent event) {
 		
 		Stage parentStage = Utils.currentStage(event);
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
+		Department depEntity = new Department();
+		createDialogForm(depEntity, "/gui/DepartmentForm.fxml", parentStage);
 	}
 	
 	// Inicia antes da tela ser montada
@@ -80,11 +81,17 @@ public class DepartmentListController implements Initializable {
 	}
 	
 	// Cria janela do formulário recebendo o endereço view e o pai dessa view)
-	private void createDialogForm(String url, Stage parentStage) {
+	private void createDialogForm(Department depEntity, String url, Stage parentStage) {
 		
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(url)); // carrega recurso desejado
 			Pane pane = loader.load(); // carrega a view passada no recurso
+			
+			// insere objeto nos campos da janela do formulário
+			DepartmentFormController controller = loader.getController(); // pega o controller da tela
+			controller.setDeptEntity(depEntity); // cria o objeto
+			controller.updateFormData(); // insere nos campos
+			
 			Stage dialogStage =  new Stage(); // P/ carregar um stage na frente do outro, cria-se um novo stage
 			dialogStage.setTitle("Insira os dados do departamento");
 			dialogStage.setScene(new Scene(pane)); // Carrega o elemento raiz da cena

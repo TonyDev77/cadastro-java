@@ -40,12 +40,12 @@ public class DepartmentListController implements Initializable {
 	@FXML
 	private Button btNew;
 	
-	// comportamento do botão "Novo" (ActionEvent permite identificar o botão que sofre a ação)
+	// comportamento do botão "Novo" (ActionEvent permite identificar o palco/cena/botão que sofre a ação)
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		
 		Stage parentStage = Utils.currentStage(event);
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage);;
+		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
 	}
 	
 	// Inicia antes da tela ser montada
@@ -79,7 +79,7 @@ public class DepartmentListController implements Initializable {
 		tableViewDepartment.setItems(obsList); // carrega na tabela da view
 	}
 	
-	// Cria janela do formulário
+	// Cria janela do formulário recebendo o endereço view e o pai dessa view)
 	private void createDialogForm(String url, Stage parentStage) {
 		
 		try {

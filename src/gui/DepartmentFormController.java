@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -21,6 +24,8 @@ public class DepartmentFormController implements Initializable{
 
 	private Department department;
 	private DepartmentService service;
+	// lista de obj interessados em escutar novos eventos (mudanças) de outros objetos
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	@FXML
 	private TextField textId;
@@ -41,6 +46,13 @@ public class DepartmentFormController implements Initializable{
 	public void setDepartmentService(DepartmentService service) {
 		this.service = service;
 	}
+	
+	// método que permite objetos se inscreverem na lista p/ receber evento (mudança)
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		
+		dataChangeListeners.add(listener);
+	}
+	
 
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
@@ -54,6 +66,7 @@ public class DepartmentFormController implements Initializable{
 		try {
 			department = getFormData(); // obtém objeto criado
 			service.saveOrUpdate(department); // salva no BD
+			notifyDataChangeListeners(); // notifica os ouvidores/listeners
 			Utils.currentStage(event).close(); // Fecha a janela
 			
 		} catch (DbException e) {
@@ -61,6 +74,14 @@ public class DepartmentFormController implements Initializable{
 		}
 	}
 	
+	// notifica os ouvidores/listeners
+	private void notifyDataChangeListeners() {
+		
+		for (DataChangeListener listener : dataChangeListeners) {
+			listener.onDataChanged();
+		}
+	}
+
 	// pega os dados do formulário e retorna um objeto
 	private Department getFormData() {
 		Department dep = new Department();

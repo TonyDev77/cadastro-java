@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable, DataChangeListener {
 
 	private DepartmentService service; // Classe de serviços
 	private ObservableList<Department> obsList; // lista p/ carregar os departamentos
@@ -91,6 +92,9 @@ public class DepartmentListController implements Initializable {
 			DepartmentFormController controller = loader.getController(); // pega o controller da tela
 			controller.setDepartment(depEntity); // cria o objeto
 			controller.setDepartmentService(new DepartmentService()); // nova instância de serviço (CRUD c/ BD)
+			
+			controller.subscribeDataChangeListener(this); // se inscreve p/ receber alerta de novos eventos
+			
 			controller.updateFormData(); // insere nos campos
 			
 			Stage dialogStage =  new Stage(); // P/ carregar um stage na frente do outro, cria-se um novo stage
@@ -104,6 +108,12 @@ public class DepartmentListController implements Initializable {
 		} catch (IOException e) {
 			Alerts.showAlert("IOException", "Erro ao carregar recurso", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onDataChanged() {
+		
+		updateTableView();
 	}
 
 }

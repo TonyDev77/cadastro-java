@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import model.entities.Department;
+import model.exceptions.ValidationExceptions;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable{
@@ -69,6 +72,9 @@ public class DepartmentFormController implements Initializable{
 			notifyDataChangeListeners(); // notifica os ouvidores/listeners
 			Utils.currentStage(event).close(); // Fecha a janela
 			
+		}  catch (ValidationExceptions e) {
+			setErrorMessage(e.getErrors()); // captura os erros na coleção do Map
+			
 		} catch (DbException e) {
 			Alerts.showAlert("Erro ao salvar", null, e.getMessage(), AlertType.ERROR);
 		}
@@ -86,8 +92,18 @@ public class DepartmentFormController implements Initializable{
 	private Department getFormData() {
 		Department dep = new Department();
 		
+		ValidationExceptions exception = new ValidationExceptions("Validation Error");
+		
 		dep.setId(Utils.tryParseToInt(textId.getText()));
+		
+		if (textName.getText() == null || textName.getText().trim().equals("")) {
+			exception.addErrors("name", "Campo 'Nome' não pode estar vazio");
+		}
 		dep.setName(textName.getText());
+		
+		if (exception.getErrors().size() > 0) {
+			throw exception;
+		}
 		
 		return dep;
 	}
@@ -120,6 +136,16 @@ public class DepartmentFormController implements Initializable{
 		}
 		textId.setText(String.valueOf(department.getId())); // converte id para string (campos só trabalham c/ string)
 		textName.setText(department.getName());
+	}
+	
+	// Retorna os erros gerados na tela do usuário
+	private void setErrorMessage(Map<String, String> errors) {
+		
+		Set<String> fields = errors.keySet(); // pega apenas a chave do Map
+		if (fields.contains("name")) {
+			labelErrorName.setText(errors.get("name")); // pega a chave do erro em Map e imprime na tela
+		}
+		
 	}
 
 }

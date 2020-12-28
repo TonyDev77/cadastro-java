@@ -154,7 +154,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		});
 	}
 
-	// cria e configura um novo botão DELETE no formuário
+	// cria e configura um novo botão DELETE no formulário
 	private void initRemoveButtons() {
 		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		// cria o botão p/ cada linha
@@ -172,7 +172,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 				setGraphic(button);
 				// chama a função que confirmará e excluirá o dado
 				button.setOnAction(event -> removeEntity(obj));
-				
+
 			}
 		});
 	}
@@ -181,15 +181,15 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private void removeEntity(Department dep) {
 
 		Optional<ButtonType> result = Alerts.showConfirmation("Confirmação", "Está certo disto?");
-		if(result.get() == ButtonType.OK) {
-			if(service == null) {
+		if (result.get() == ButtonType.OK) {
+			if (service == null) {
 				throw new IllegalStateException("Serviço esrava null");
 			}
-			
+
 			try {
 				service.remove(dep);
 				updateTableView();
-				
+
 			} catch (DbIntegrityException e) {
 				Alerts.showAlert("Erro ao excluir", null, e.getMessage(), AlertType.ERROR);
 			}

@@ -33,3 +33,6 @@ nbdist/
 
 # access db
 db.properties
+
+# Eclipse
+.settings/

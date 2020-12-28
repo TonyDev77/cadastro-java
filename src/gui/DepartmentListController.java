@@ -127,9 +127,10 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		
 		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		
-		// cri o botão p/ cada linha
+		// cria o botão p/ cada linha
 		tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() {
 			private final Button button = new Button("Edit"); // define o nome do botão
+			
 			@Override
 			protected void updateItem(Department obj, boolean empty) {
 				super.updateItem(obj, empty);

@@ -9,6 +9,7 @@ public class ValidationExceptions extends RuntimeException {
 	
 	private Map<String, String> errors = new HashMap<>();
 	
+	// construtor
 	public ValidationExceptions(String msg) {
 		super(msg);
 	}

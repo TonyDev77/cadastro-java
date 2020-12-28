@@ -71,7 +71,7 @@ public class DepartmentFormController implements Initializable{
 			service.saveOrUpdate(department); // salva no BD
 			notifyDataChangeListeners(); // notifica os ouvidores/listeners
 			Utils.currentStage(event).close(); // Fecha a janela
-			
+			    
 		}  catch (ValidationExceptions e) {
 			setErrorMessage(e.getErrors()); // captura os erros na coleção do Map
 			
@@ -96,9 +96,11 @@ public class DepartmentFormController implements Initializable{
 		
 		dep.setId(Utils.tryParseToInt(textId.getText()));
 		
+		// valida o os campos do formulário
 		if (textName.getText() == null || textName.getText().trim().equals("")) {
 			exception.addErrors("name", "Campo 'Nome' não pode estar vazio");
 		}
+		
 		dep.setName(textName.getText());
 		
 		if (exception.getErrors().size() > 0) {
@@ -141,7 +143,7 @@ public class DepartmentFormController implements Initializable{
 	// Retorna os erros gerados na tela do usuário
 	private void setErrorMessage(Map<String, String> errors) {
 		
-		Set<String> fields = errors.keySet(); // pega apenas a chave do Map
+		Set<String> fields = errors.keySet(); // percorre o Map pegando apenas a chave
 		if (fields.contains("name")) {
 			labelErrorName.setText(errors.get("name")); // pega a chave do erro em Map e imprime na tela
 		}

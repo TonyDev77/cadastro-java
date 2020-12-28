@@ -9,6 +9,7 @@ import application.Main;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -38,6 +40,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private TableColumn<Department, Integer> tableColumnId; // coluna id
 	@FXML
 	private TableColumn<Department, String> tableColumnName; // coluna nome 
+	@FXML
+	private TableColumn<Department, Department> tableColumnEDIT; // cria botão edit
 	@FXML
 	private Button btNew;
 	
@@ -79,6 +83,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		List<Department> list = service.findAll(); // carrega lista de departamentos
 		obsList = FXCollections.observableArrayList(list); // armazena em obsList
 		tableViewDepartment.setItems(obsList); // carrega na tabela da view
+		
+		initEditButtons(); // Cria um botão EDIT para cada campo do form
 	}
 	
 	// Cria janela do formulário recebendo o endereço view e o pai dessa view)
@@ -114,6 +120,29 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	public void onDataChanged() {
 		
 		updateTableView();
+	}
+	
+	// Cria um novo botão EDIT no formulário
+	private void initEditButtons() {
+		
+		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		
+		// cri o botão p/ cada linha
+		tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() {
+			private final Button button = new Button("Edit"); // define o nome do botão
+			@Override
+			protected void updateItem(Department obj, boolean empty) {
+				super.updateItem(obj, empty);
+				
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				// quando clicado abre o formulário de edição
+				button.setOnAction(event -> createDialogForm(obj, "/gui/DepartmentForm.fxml", Utils.currentStage(event)));
+			}
+		});
 	}
 
 }

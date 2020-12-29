@@ -136,7 +136,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 
 		// cria o botão p/ cada linha
 		tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() {
-			private final Button button = new Button("Edit"); // define o nome do botão
+			private final Button button = new Button("Editar"); // define o nome do botão
 
 			@Override
 			protected void updateItem(Department obj, boolean empty) {
@@ -159,7 +159,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		// cria o botão p/ cada linha
 		tableColumnREMOVE.setCellFactory(param -> new TableCell<Department, Department>() {
-			private final Button button = new Button("Remove"); // define o nome do botão
+			private final Button button = new Button("Deletar"); // define o nome do botão
 
 			@Override
 			protected void updateItem(Department obj, boolean empty) {

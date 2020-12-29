@@ -12,7 +12,6 @@ public class SellerService {
 
 	// busca todos os departamentos
 	public List<Seller> findAll() {
-		
 		return dao.findAll();
 	}
 	

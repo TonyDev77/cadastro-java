@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -24,6 +27,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -93,7 +98,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 		if (service == null) {
 			throw new IllegalStateException("Serviço estava null");
 		}
-		List<Seller> list = service.findAll(); // carrega lista de departamentos
+		List<Seller> list = service.findAll(); // carrega lista de vendedores
 		obsList = FXCollections.observableArrayList(list); // armazena em obsList
 		tableViewSeller.setItems(obsList); // carrega na tabela da view
 
@@ -104,30 +109,30 @@ public class SellerListController implements Initializable, DataChangeListener {
 	// Cria janela do formulário recebendo o endereço view e o pai dessa view)
 	private void createDialogForm(Seller depEntity, String url, Stage parentStage) {
 
-//		try {
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource(url)); // carrega recurso desejado
-//			Pane pane = loader.load(); // carrega a view passada no recurso
-//
-//			// insere objeto nos campos da janela do formulário
-//			SellerFormController controller = loader.getController(); // pega o controller da tela
-//			controller.setSeller(depEntity); // cria o objeto
-//			controller.setSellerService(new SellerService()); // nova instância de serviço (CRUD c/ BD)
-//
-//			controller.subscribeDataChangeListener(this); // se inscreve p/ receber alerta de novos eventos
-//
-//			controller.updateFormData(); // insere nos campos
-//
-//			Stage dialogStage = new Stage(); // P/ carregar um stage na frente do outro, cria-se um novo stage
-//			dialogStage.setTitle("Insira os dados do departamento");
-//			dialogStage.setScene(new Scene(pane)); // Carrega o elemento raiz da cena
-//			dialogStage.setResizable(false); // não pode redimensionar a janela
-//			dialogStage.initOwner(parentStage); // define quem será o pai dessa janela
-//			dialogStage.initModality(Modality.WINDOW_MODAL);// Torna ativa somente esta janela
-//			dialogStage.showAndWait(); // Mostra a janela
-//
-//		} catch (IOException e) {
-//			Alerts.showAlert("IOException", "Erro ao carregar recurso", e.getMessage(), AlertType.ERROR);
-//		}
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(url)); // carrega recurso desejado
+			Pane pane = loader.load(); // carrega a view passada no recurso
+
+			// insere objeto nos campos da janela do formulário
+			SellerFormController controller = loader.getController(); // pega o controller da tela
+			controller.setSeller(depEntity); // cria o objeto
+			controller.setSellerService(new SellerService()); // nova instância de serviço (CRUD c/ BD)
+
+			controller.subscribeDataChangeListener(this); // se inscreve p/ receber alerta de novos eventos
+
+			controller.updateFormData(); // insere nos campos
+
+			Stage dialogStage = new Stage(); // P/ carregar um stage na frente do outro, cria-se um novo stage
+			dialogStage.setTitle("Insira os dados do departamento");
+			dialogStage.setScene(new Scene(pane)); // Carrega o elemento raiz da cena
+			dialogStage.setResizable(false); // não pode redimensionar a janela
+			dialogStage.initOwner(parentStage); // define quem será o pai dessa janela
+			dialogStage.initModality(Modality.WINDOW_MODAL);// Torna ativa somente esta janela
+			dialogStage.showAndWait(); // Mostra a janela
+
+		} catch (IOException e) {
+			Alerts.showAlert("IOException", "Erro ao carregar recurso", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	@Override
@@ -143,7 +148,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 
 		// cria o botão p/ cada linha
 		tableColumnEDIT.setCellFactory(param -> new TableCell<Seller, Seller>() {
-			private final Button button = new Button("Edit"); // define o nome do botão
+			private final Button button = new Button("Editar"); // define o nome do botão
 
 			@Override
 			protected void updateItem(Seller obj, boolean empty) {
@@ -166,7 +171,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		// cria o botão p/ cada linha
 		tableColumnREMOVE.setCellFactory(param -> new TableCell<Seller, Seller>() {
-			private final Button button = new Button("Remove"); // define o nome do botão
+			private final Button button = new Button("Deletar"); // define o nome do botão
 
 			@Override
 			protected void updateItem(Seller obj, boolean empty) {

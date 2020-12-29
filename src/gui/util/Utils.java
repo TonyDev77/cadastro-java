@@ -2,7 +2,6 @@ package gui.util;
 
 import java.sql.Date;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -26,7 +25,7 @@ public class Utils {
 		}
 	}
 	
-	// Formata coluna data (java.sql.date -> LocalDate)
+	// Formata coluna para data (java.sql.date -> LocalDate)
 	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
 		tableColumn.setCellFactory(column -> {
 			TableCell<T, Date> cell = new TableCell<T, Date>() {
@@ -46,7 +45,7 @@ public class Utils {
 		});
 	}
 	
-	// Formata a coluna salary do form
+	// Formata a coluna salary para decimal
 	public static <T> void formatTableColumnDouble(TableColumn<T, Double> tableColumn, int decimalPlaces) {
 		tableColumn.setCellFactory(column -> {
 			TableCell<T, Double> cell = new TableCell<T, Double>() {

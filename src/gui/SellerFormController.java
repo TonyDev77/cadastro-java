@@ -3,6 +3,7 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -15,27 +16,42 @@ import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import model.entities.Seller;
 import model.exceptions.ValidationExceptions;
 import model.services.SellerService;
 
 public class SellerFormController implements Initializable{
 
-	private Seller department;
+	private Seller seller;
 	private SellerService service;
 	// lista de obj interessados em escutar novos eventos (mudanças) de outros objetos
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	@FXML
-	private TextField textId;
+	private TextField textId; // campo id
 	@FXML
-	private TextField textName;
+	private TextField textName; // campo nome
 	@FXML
-	private Label labelErrorName;
+	private TextField textEmail; // campo email
+	@FXML
+	private DatePicker dpBirthDate; // campo nascimento
+	@FXML
+	private TextField textBaseSalary; // campo salário
+	// campo erros
+	@FXML
+	private Label labelErrorName; 
+	@FXML
+	private Label labelErrorEmail; // campo erro email
+	@FXML
+	private Label labelErrorBirthDate; // campo erro nascimento
+	@FXML
+	private Label labelErrorBaseSalary; // campo erro salário
+	
 	@FXML
 	private Button btSave;
 	@FXML
@@ -43,7 +59,7 @@ public class SellerFormController implements Initializable{
 	
 	// instancia novo vendedor
 	public void setSeller(Seller department) {
-		this.department = department;
+		this.seller = department;
 	}
 	
 	public void setSellerService(SellerService service) {
@@ -59,7 +75,7 @@ public class SellerFormController implements Initializable{
 
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
-		if (department == null) {
+		if (seller == null) {
 			throw new IllegalStateException("Entidade está null");
 		}
 		if (service == null) {
@@ -67,8 +83,8 @@ public class SellerFormController implements Initializable{
 		}
 		
 		try {
-			department = getFormData(); // obtém objeto criado
-			service.saveOrUpdate(department); // salva no BD
+			seller = getFormData(); // obtém objeto criado
+			service.saveOrUpdate(seller); // salva no BD
 			notifyDataChangeListeners(); // notifica os ouvidores/listeners
 			Utils.currentStage(event).close(); // Fecha a janela
 			    
@@ -127,17 +143,24 @@ public class SellerFormController implements Initializable{
 	// Validação para os campos textFields
 	private void initializeNode() {
 		Constraints.setTextFieldInteger(textId);
-		Constraints.setTextFieldMaxLength(textName, 30 );
+		Constraints.setTextFieldMaxLength(textName, 70);
+		Constraints.setTextFieldMaxLength(textEmail, 60);
+		Constraints.setTextFieldDouble(textBaseSalary);
+		Utils.formatDatePicker(dpBirthDate, "dd/MM/yyyy");
 	}
 	
 	// Popula os campos (id, name) com a entity Seller
 	public void updateFormData() {
 		
-		if (department == null) {
+		if (seller == null) {
 			throw new IllegalStateException("Entidade null");
 		}
-		textId.setText(String.valueOf(department.getId())); // converte id para string (campos só trabalham c/ string)
-		textName.setText(department.getName());
+		textId.setText(String.valueOf(seller.getId())); // converte id para string (campos só trabalham c/ string)
+		textName.setText(seller.getName());
+		textEmail.setText(seller.getEmail());
+		Locale.setDefault(Locale.US);
+		textBaseSalary.setText(String.format("%.2f", seller.getBaseSalary())); //String.format("%.2f", seller.getBaseSalary())
+		dpBirthDate.setValue(seller.getBirthDate());
 	}
 	
 	// Retorna os erros gerados na tela do usuário

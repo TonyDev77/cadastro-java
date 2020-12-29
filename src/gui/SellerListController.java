@@ -2,7 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -47,7 +47,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 	@FXML
 	private TableColumn<Seller, String> tableColumnEmail; // coluna email
 	@FXML
-	private TableColumn<Seller, Date> tableColumnBirthDate; // coluna nascimento (java.sql.Date) 
+	private TableColumn<Seller, LocalDate> tableColumnBirthDate; // coluna nascimento
 	@FXML
 	private TableColumn<Seller, Double> tableColumnBaseSalary; // coluna salário
 	@FXML

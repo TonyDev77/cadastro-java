@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerListController implements Initializable, DataChangeListener {
@@ -116,8 +117,9 @@ public class SellerListController implements Initializable, DataChangeListener {
 			// insere objeto nos campos da janela do formulário
 			SellerFormController controller = loader.getController(); // pega o controller da tela
 			controller.setSeller(depEntity); // cria o objeto
-			controller.setSellerService(new SellerService()); // nova instância de serviço (CRUD c/ BD)
-
+			controller.setServices(new SellerService(), new DepartmentService()); // nova instância de serviço (CRUD c/ BD)
+			controller.loadAssociatedObjects(); // carrega o comboBox de departamentos
+			
 			controller.subscribeDataChangeListener(this); // se inscreve p/ receber alerta de novos eventos
 
 			controller.updateFormData(); // insere nos campos
@@ -131,6 +133,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 			dialogStage.showAndWait(); // Mostra a janela
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IOException", "Erro ao carregar recurso", e.getMessage(), AlertType.ERROR);
 		}
 	}

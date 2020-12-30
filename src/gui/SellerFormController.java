@@ -13,22 +13,31 @@ import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
+import model.entities.Department;
 import model.entities.Seller;
 import model.exceptions.ValidationExceptions;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerFormController implements Initializable{
 
 	private Seller seller;
 	private SellerService service;
+	private DepartmentService departmentService;
 	// lista de obj interessados em escutar novos eventos (mudanças) de outros objetos
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
@@ -42,6 +51,10 @@ public class SellerFormController implements Initializable{
 	private DatePicker dpBirthDate; // campo nascimento
 	@FXML
 	private TextField textBaseSalary; // campo salário
+	@FXML
+	private ComboBox<Department> comboBoxDepartment; // comboBox
+	private ObservableList<Department> obsList;
+	
 	// campo erros
 	@FXML
 	private Label labelErrorName; 
@@ -62,8 +75,9 @@ public class SellerFormController implements Initializable{
 		this.seller = department;
 	}
 	
-	public void setSellerService(SellerService service) {
+	public void setServices(SellerService service, DepartmentService departmentServicese) {
 		this.service = service;
+		this.departmentService = departmentServicese;
 	}
 	
 	// método que permite objetos se inscreverem na lista p/ receber evento (mudança)
@@ -147,20 +161,51 @@ public class SellerFormController implements Initializable{
 		Constraints.setTextFieldMaxLength(textEmail, 60);
 		Constraints.setTextFieldDouble(textBaseSalary);
 		Utils.formatDatePicker(dpBirthDate, "dd/MM/yyyy");
+		initializeComboBoxDepartment(); // inicializa o comboBox
 	}
 	
 	// Popula os campos (id, name) com a entity Seller
 	public void updateFormData() {
 		
 		if (seller == null) {
-			throw new IllegalStateException("Entidade null");
+			throw new IllegalStateException("Entidade estava null");
 		}
 		textId.setText(String.valueOf(seller.getId())); // converte id para string (campos só trabalham c/ string)
 		textName.setText(seller.getName());
 		textEmail.setText(seller.getEmail());
 		Locale.setDefault(Locale.US);
-		textBaseSalary.setText(String.format("%.2f", seller.getBaseSalary())); //String.format("%.2f", seller.getBaseSalary())
+		textBaseSalary.setText(String.format("%.2f", seller.getBaseSalary())); 
 		dpBirthDate.setValue(seller.getBirthDate());
+		// preenche o comboBox c/ departamentos
+		if(seller.getDepartment() == null) {
+			comboBoxDepartment.getSelectionModel().selectFirst();
+		} else {
+			comboBoxDepartment.setValue(seller.getDepartment()); 
+		}
+	}
+	
+	// Carrega os dados do BD para o ObservableList
+	public void loadAssociatedObjects() {
+		if (departmentService == null) {
+			throw new IllegalStateException("DepartmentService estava null");
+		}
+		List<Department> listDep = departmentService.findAll(); // carrega os departamentos do BD
+		obsList = FXCollections.observableArrayList(listDep); // copia a lista p/ ObservableList
+		comboBoxDepartment.setItems(obsList); // inser os dados do ObservableList no ComboBox
+		
+	}
+	
+	// Inicializa o comboBox de Departamento
+	private void initializeComboBoxDepartment() {
+		Callback<ListView<Department>, ListCell<Department>> factory = lv -> new ListCell<Department>() {
+			@Override
+			protected void updateItem(Department item, boolean empty) {
+				super.updateItem(item, empty);
+				setText(empty ? "" : item.getName());
+			}
+		};
+		comboBoxDepartment.setCellFactory(factory);
+		comboBoxDepartment.setButtonCell(factory.call(null));
 	}
 	
 	// Retorna os erros gerados na tela do usuário

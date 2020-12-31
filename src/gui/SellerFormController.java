@@ -1,7 +1,6 @@
 package gui;
 
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -102,7 +101,6 @@ public class SellerFormController implements Initializable{
 		try {
 			seller = getFormData(); // obtém objeto criado
 			//TODO: CONCERTAR ERRO DE DATA - 1
-			System.out.println(this.seller.getBirthDate());
 			service.saveOrUpdate(seller); // salva no BD
 			notifyDataChangeListeners(); // notifica os ouvidores/listeners
 			Utils.currentStage(event).close(); // Fecha a janela
@@ -145,29 +143,35 @@ public class SellerFormController implements Initializable{
 		
 
 		// valida o campo data
+
+		if (dpkBirthDate.getValue() == null) {
+			exception.addErrors("birthDate", "Este campo não pode estar vazio!");
+		}
+		seller.setBirthDate(dpkBirthDate.getValue());
+		/* 
+		TODO: forma alternativa de capturar os dados do DatePicker
+		
 		if (dpkBirthDate.getEditor().getText().equals("")) {
 			exception.addErrors("birthDate", "Este campo não pode estar vazio!");
 		}
-		//TODO: by tony [30 de dez de 2020, 18:41:38]
-		/*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		TemporalAccessor ta = dtf.parse(dpkBirthDate.getEditor().getText());
-		seller.setBirthDate(LocalDate.from(ta));*/
 		String getStringDate = dpkBirthDate.getEditor().getText();
 		LocalDate stringDateConverted = dpkBirthDate.getConverter().fromString(getStringDate);
 		seller.setBirthDate(stringDateConverted);
+		*/
 
-		
 		// valida o campo Salário
 		if (textBaseSalary.getText() == null || textBaseSalary.getText().trim().equals("")) {
 			exception.addErrors("baseSalary", "Este campo não pode estar vazio!");
 		}
 		seller.setBaseSalary(Utils.tryParseToDouble(textBaseSalary.getText()));
 		
+		// valida o campo departamento
 		if (comboBoxDepartment.getValue() == null) {
 			exception.addErrors("department", "Este campo não pode estar vazio!");
 		}
 		seller.setDepartment(comboBoxDepartment.getValue());
 		
+		// Lança os erros
 		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
@@ -195,7 +199,7 @@ public class SellerFormController implements Initializable{
 		Constraints.setTextFieldMaxLength(textName, 70);
 		Constraints.setTextFieldMaxLength(textEmail, 60);
 		Constraints.setTextFieldDouble(textBaseSalary);
-		Utils.formatDatePicker(dpkBirthDate, "dd/MM/yyyy");
+		Utils.formatDatePicker(dpkBirthDate, "dd/MM/yyyy"); //TODO: by tony [31 de dez de 2020, 10:12:37]
 		initializeComboBoxDepartment(); // inicializa o comboBox
 	}
 	

@@ -3,6 +3,8 @@ package gui.util;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
@@ -101,5 +103,15 @@ public class Utils {
 				}
 			}
 		});
+		
+		// Resolve o problema do DatePicker ficar null quando digita a data manualmente
+		datePicker.focusedProperty().addListener(new ChangeListener<Boolean>() {
+	        @Override
+	        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+	            if (!newValue){
+	            	datePicker.setValue(datePicker.getConverter().fromString(datePicker.getEditor().getText()));
+	            }
+	        }
+	    });
 	}
 }

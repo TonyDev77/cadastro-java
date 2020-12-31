@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -57,13 +58,15 @@ public class SellerFormController implements Initializable{
 	
 	// campo erros
 	@FXML
-	private Label labelErrorName; 
+	private Label labelErrorName;  // campo erro nome
 	@FXML
 	private Label labelErrorEmail; // campo erro email
 	@FXML
 	private Label labelErrorBirthDate; // campo erro nascimento
 	@FXML
 	private Label labelErrorBaseSalary; // campo erro salário
+	@FXML
+	private Label labelErrorDepartment; // campo erro departamento
 	
 	@FXML
 	private Button btSave;
@@ -132,36 +135,37 @@ public class SellerFormController implements Initializable{
 		if (textName.getText() == null || textName.getText().trim().equals("")) {
 			exception.addErrors("name", "Este campo não pode estar vazio!");
 		}
-		System.out.println(textName.getText());
 		seller.setName(textName.getText());
 		
 		// valida o campo email do formulário
 		if (textEmail.getText() == null || textEmail.getText().trim().equals("")) {
 			exception.addErrors("email", "Este campo não pode estar vazio!");
 		}
-		System.out.println(textEmail.getText());
 		seller.setEmail(textEmail.getText());
 		
 
 		// valida o campo data
-		if (dpkBirthDate.getValue() == null) {
+		if (dpkBirthDate.getEditor().getText().equals("")) {
 			exception.addErrors("birthDate", "Este campo não pode estar vazio!");
-		} else {
-			System.out.println(dpkBirthDate.getValue());
-			/*Instant instant = Instant.from(dpkBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
-			seller.setBirthDate(LocalDate.from(instant));*/
-			//TODO: by tony [30 de dez de 2020, 18:41:38]
-			seller.setBirthDate(dpkBirthDate.getValue());
 		}
+		//TODO: by tony [30 de dez de 2020, 18:41:38]
+		/*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		TemporalAccessor ta = dtf.parse(dpkBirthDate.getEditor().getText());
+		seller.setBirthDate(LocalDate.from(ta));*/
+		String getStringDate = dpkBirthDate.getEditor().getText();
+		LocalDate stringDateConverted = dpkBirthDate.getConverter().fromString(getStringDate);
+		seller.setBirthDate(stringDateConverted);
+
 		
 		// valida o campo Salário
 		if (textBaseSalary.getText() == null || textBaseSalary.getText().trim().equals("")) {
 			exception.addErrors("baseSalary", "Este campo não pode estar vazio!");
 		}
-		System.out.println(textBaseSalary.getText());
 		seller.setBaseSalary(Utils.tryParseToDouble(textBaseSalary.getText()));
 		
-		System.out.println(comboBoxDepartment.getValue().getName());
+		if (comboBoxDepartment.getValue() == null) {
+			exception.addErrors("department", "Este campo não pode estar vazio!");
+		}
 		seller.setDepartment(comboBoxDepartment.getValue());
 		
 		if (exception.getErrors().size() > 0) {
@@ -249,6 +253,7 @@ public class SellerFormController implements Initializable{
 		labelErrorEmail.setText((fields.contains("email") ? errors.get("email") : ""));
 		labelErrorBaseSalary.setText((fields.contains("baseSalary") ? errors.get("baseSalary") : ""));
 		labelErrorBirthDate.setText((fields.contains("birthDate") ? errors.get("birthDate") : ""));
+		labelErrorDepartment.setText((fields.contains("department") ? errors.get("department") : ""));
 	}
 
 }

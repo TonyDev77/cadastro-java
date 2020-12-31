@@ -59,6 +59,11 @@
                </GridPane.margin></Label>
             <Label text="Depto." GridPane.rowIndex="5" />
             <ComboBox fx:id="comboBoxDepartment" prefWidth="150.0" promptText="Escolha..." GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label fx:id="labelErrorDepartment" textFill="#d06e6e" GridPane.columnIndex="2" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets left="7.0" />
+               </GridPane.margin>
+            </Label>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="7.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <children>
                   <Button fx:id="btSave" mnemonicParsing="false" onAction="#onBtSaveAction" text="Salvar">

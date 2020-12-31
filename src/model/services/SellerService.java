@@ -18,7 +18,6 @@ public class SellerService {
 	// salva ou atualiza dados no BD
 	public void saveOrUpdate(Seller seller) {
 		if (seller.getId() == null) {
-			//TODO: CONCERTAR ERRO DE DATA - 2
 			dao.insert(seller);
 		} else {
 			dao.update(seller);

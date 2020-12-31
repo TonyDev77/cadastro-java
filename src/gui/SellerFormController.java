@@ -100,7 +100,6 @@ public class SellerFormController implements Initializable{
 		
 		try {
 			seller = getFormData(); // obtém objeto criado
-			//TODO: CONCERTAR ERRO DE DATA - 1
 			service.saveOrUpdate(seller); // salva no BD
 			notifyDataChangeListeners(); // notifica os ouvidores/listeners
 			Utils.currentStage(event).close(); // Fecha a janela
@@ -143,7 +142,6 @@ public class SellerFormController implements Initializable{
 		
 
 		// valida o campo data
-
 		if (dpkBirthDate.getValue() == null) {
 			exception.addErrors("birthDate", "Este campo não pode estar vazio!");
 		}
@@ -199,7 +197,7 @@ public class SellerFormController implements Initializable{
 		Constraints.setTextFieldMaxLength(textName, 70);
 		Constraints.setTextFieldMaxLength(textEmail, 60);
 		Constraints.setTextFieldDouble(textBaseSalary);
-		Utils.formatDatePicker(dpkBirthDate, "dd/MM/yyyy"); //TODO: by tony [31 de dez de 2020, 10:12:37]
+		Utils.formatDatePicker(dpkBirthDate, "dd/MM/yyyy");
 		initializeComboBoxDepartment(); // inicializa o comboBox
 	}
 	

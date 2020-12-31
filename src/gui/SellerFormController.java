@@ -48,7 +48,7 @@ public class SellerFormController implements Initializable{
 	@FXML
 	private TextField textEmail; // campo email
 	@FXML
-	private DatePicker dpBirthDate; // campo nascimento
+	private DatePicker dpkBirthDate; // campo nascimento
 	@FXML
 	private TextField textBaseSalary; // campo salário
 	@FXML
@@ -98,6 +98,8 @@ public class SellerFormController implements Initializable{
 		
 		try {
 			seller = getFormData(); // obtém objeto criado
+			//TODO: CONCERTAR ERRO DE DATA - 1
+			System.out.println(this.seller.getBirthDate());
 			service.saveOrUpdate(seller); // salva no BD
 			notifyDataChangeListeners(); // notifica os ouvidores/listeners
 			Utils.currentStage(event).close(); // Fecha a janela
@@ -120,24 +122,53 @@ public class SellerFormController implements Initializable{
 
 	// pega os dados do formulário e retorna um objeto
 	private Seller getFormData() {
-		Seller dep = new Seller();
+		Seller seller = new Seller();
 		
 		ValidationExceptions exception = new ValidationExceptions("Validation Error");
 		
-		dep.setId(Utils.tryParseToInt(textId.getText()));
+		seller.setId(Utils.tryParseToInt(textId.getText()));
 		
-		// valida o os campos do formulário
+		// valida o campo nome do formulário
 		if (textName.getText() == null || textName.getText().trim().equals("")) {
-			exception.addErrors("name", "Campo 'Nome' não pode estar vazio");
+			exception.addErrors("name", "Este campo não pode estar vazio!");
+		}
+		System.out.println(textName.getText());
+		seller.setName(textName.getText());
+		
+		// valida o campo email do formulário
+		if (textEmail.getText() == null || textEmail.getText().trim().equals("")) {
+			exception.addErrors("email", "Este campo não pode estar vazio!");
+		}
+		System.out.println(textEmail.getText());
+		seller.setEmail(textEmail.getText());
+		
+
+		// valida o campo data
+		if (dpkBirthDate.getValue() == null) {
+			exception.addErrors("birthDate", "Este campo não pode estar vazio!");
+		} else {
+			System.out.println(dpkBirthDate.getValue());
+			/*Instant instant = Instant.from(dpkBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+			seller.setBirthDate(LocalDate.from(instant));*/
+			//TODO: by tony [30 de dez de 2020, 18:41:38]
+			seller.setBirthDate(dpkBirthDate.getValue());
 		}
 		
-		dep.setName(textName.getText());
+		// valida o campo Salário
+		if (textBaseSalary.getText() == null || textBaseSalary.getText().trim().equals("")) {
+			exception.addErrors("baseSalary", "Este campo não pode estar vazio!");
+		}
+		System.out.println(textBaseSalary.getText());
+		seller.setBaseSalary(Utils.tryParseToDouble(textBaseSalary.getText()));
+		
+		System.out.println(comboBoxDepartment.getValue().getName());
+		seller.setDepartment(comboBoxDepartment.getValue());
 		
 		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
 		
-		return dep;
+		return seller;
 	}
 
 	@FXML
@@ -160,7 +191,7 @@ public class SellerFormController implements Initializable{
 		Constraints.setTextFieldMaxLength(textName, 70);
 		Constraints.setTextFieldMaxLength(textEmail, 60);
 		Constraints.setTextFieldDouble(textBaseSalary);
-		Utils.formatDatePicker(dpBirthDate, "dd/MM/yyyy");
+		Utils.formatDatePicker(dpkBirthDate, "dd/MM/yyyy");
 		initializeComboBoxDepartment(); // inicializa o comboBox
 	}
 	
@@ -175,16 +206,16 @@ public class SellerFormController implements Initializable{
 		textEmail.setText(seller.getEmail());
 		Locale.setDefault(Locale.US);
 		textBaseSalary.setText(String.format("%.2f", seller.getBaseSalary())); 
-		dpBirthDate.setValue(seller.getBirthDate());
+		dpkBirthDate.setValue(seller.getBirthDate());
 		// preenche o comboBox c/ departamentos
 		if(seller.getDepartment() == null) {
-			comboBoxDepartment.getSelectionModel().selectFirst();
+			comboBoxDepartment.getSelectionModel().clearSelection();
 		} else {
 			comboBoxDepartment.setValue(seller.getDepartment()); 
 		}
 	}
 	
-	// Carrega os dados do BD para o ObservableList
+	// Carrega os dados do BD para o ComboBox
 	public void loadAssociatedObjects() {
 		if (departmentService == null) {
 			throw new IllegalStateException("DepartmentService estava null");
@@ -212,10 +243,12 @@ public class SellerFormController implements Initializable{
 	private void setErrorMessage(Map<String, String> errors) {
 		
 		Set<String> fields = errors.keySet(); // percorre o Map pegando apenas a chave
-		if (fields.contains("name")) {
-			labelErrorName.setText(errors.get("name")); // pega a chave do erro em Map e imprime na tela
-		}
 		
+		// pega a chave do erro em Map e imprime na tela
+		labelErrorName.setText((fields.contains("name") ? errors.get("name") : ""));
+		labelErrorEmail.setText((fields.contains("email") ? errors.get("email") : ""));
+		labelErrorBaseSalary.setText((fields.contains("baseSalary") ? errors.get("baseSalary") : ""));
+		labelErrorBirthDate.setText((fields.contains("birthDate") ? errors.get("birthDate") : ""));
 	}
 
 }

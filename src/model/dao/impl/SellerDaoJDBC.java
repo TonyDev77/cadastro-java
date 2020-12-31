@@ -37,6 +37,7 @@ public class SellerDaoJDBC implements SellerDao {
 			
 			st.setString(1, obj.getName());
 			st.setString(2, obj.getEmail());
+			//TODO: CONCERTAR ERRO DE DATA - 2
 			st.setDate(3, java.sql.Date.valueOf(obj.getBirthDate()));
 			st.setDouble(4, obj.getBaseSalary());
 			st.setInt(5, obj.getDepartment().getId());

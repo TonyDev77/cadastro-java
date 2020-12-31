@@ -16,16 +16,17 @@ public class SellerService {
 	}
 	
 	// salva ou atualiza dados no BD
-	public void saveOrUpdate(Seller dep) {
-		if (dep.getId() == null) {
-			dao.insert(dep);
+	public void saveOrUpdate(Seller seller) {
+		if (seller.getId() == null) {
+			//TODO: CONCERTAR ERRO DE DATA - 2
+			dao.insert(seller);
 		} else {
-			dao.update(dep);
+			dao.update(seller);
 		}
 	}
 	
 	// deleta um dados no BD
-	public void remove(Seller dep) {
-		dao.deleteById(dep.getId());
+	public void remove(Seller seller) {
+		dao.deleteById(seller.getId());
 	}
 }

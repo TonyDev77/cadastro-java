@@ -27,7 +27,16 @@ public class Utils {
 		}
 	}
 	
-	// Formata coluna para data (java.sql.date -> LocalDate)
+	// converte texto p/ Double
+	public static Double tryParseToDouble(String str) {
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+	
+	// Formata coluna para data 
 	public static <T> void formatTableColumnDate(TableColumn<T, LocalDate> tableColumn, String format) {
 		tableColumn.setCellFactory(column -> {
 			TableCell<T, LocalDate> cell = new TableCell<T, LocalDate>() {
